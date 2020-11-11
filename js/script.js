@@ -39,12 +39,42 @@ function showPage(list, page) {
       }
    }
 }
-showPage(data, 1);
+//showPage(data, 1);
 
 /*
 Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
 */
 
+function  pageButtons(list) {
+   const totalButtons = Math.ceil(list.length / 9);
+   const linkList = document.querySelector('.link-list');
+   linkList.innerHTML = '';
+   for (let i = 0; i <  totalButtons;  i++) {
+      let html = `
+      <li>
+         <button type="button">${i + 1}</button>
+      </li>
+      `
+      linkList.insertAdjacentHTML('beforeend', html);
+   }
+   let firstButton = document.querySelector('.link-list').firstElementChild.firstElementChild;
+   firstButton.className = 'active';
+   linkList.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') {
+         let active = linkList.querySelector('.active');
+         active.className = '';
+         e.target.className = 'active';
+         let page = e.target.textContent;
+         showPage(data, page);
+      }
+   });
+
+}
+
+
 
 // Call functions
+
+showPage(data, 1);
+pageButtons(data);

@@ -12,16 +12,14 @@ const input = document.querySelector('input');
 const label = document.querySelector('label');
 
 
+// Function that displays 9 students on page load.
+// Displays results of student search from input field.
+// Displays message if search result is empty.
 
-
-/*
-Create the `showPage` function
-This function will create and insert/append the elements needed to display a "page" of nine students
-*/
 function showPage(list, page) {
    let h1 = document.querySelector('h1');
    if (list.length < 1 && !h1) {
-      let noResults = 'Sorry, No Matches Found.';
+      let noResults = 'No Results Found';
       let noMatches = `<h1>${noResults}</h1>`
       header.insertAdjacentHTML('afterend', noMatches);
    }  
@@ -50,10 +48,9 @@ function showPage(list, page) {
    }
 }
 
-/*
-Create the `addPagination` function
-This function will create and insert/append the elements needed for the pagination buttons
-*/
+// Function that creates number of buttons needed based on list length.
+// Appends buttons to page.
+// No buttons displayed if search result is empty.
 
 function  pageButtons(list) {
    const totalButtons = Math.ceil(list.length / 9);
@@ -76,12 +73,16 @@ function  pageButtons(list) {
    let firstButton = document.querySelector('.link-list').firstElementChild.firstElementChild;
    firstButton.className = 'active';
 
+   // Event changes button className to active when button clicked.
+   // Displays new page when page button clicked.
+
    linkList.addEventListener('click', (e) => {
       if (e.target.tagName === 'BUTTON') {
          let active = linkList.querySelector('.active');
          active.className = '';
          e.target.className = 'active';
          let page = e.target.textContent;
+
          if (data === list){
             showPage (data, page);
          } else {
@@ -102,6 +103,7 @@ function filterNames(searchInput, list) {
       let lastName = list[i].name.last;
       let fullName = `${firstName} ${lastName}`;
       let filterName = fullName.toLocaleLowerCase();
+
       if (filterName.includes(searchInput.toLowerCase())) {
          filterList.push(list[i]);
       }   
@@ -115,6 +117,7 @@ function filterNames(searchInput, list) {
 
 // Event listeners call filterNames function as someone searches for a student name.
 // Events pass inputValue and student data field as arguments.
+
 label.addEventListener('click', (e) => {
    e.preventDefault();
    if (e.target.value === '') {
@@ -131,6 +134,7 @@ input.addEventListener('keyup', (e) => {
    filterNames(inputValue, data);
  });
 
-// Call functions to load page 1
+// Call function to load page 1 with the first 9 students from data array.
 showPage(data, 1);
+// Call function to load page buttons based on number of students in data array.
 pageButtons(data);

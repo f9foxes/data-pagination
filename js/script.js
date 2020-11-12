@@ -4,47 +4,27 @@ const headerHtml = `
          <input id="search" placeholder="Search by name...">
          <button type="button"><img src="img/icn-search.svg" alt="Search icon"></button>
       </label>
-   `
+    `
+// Inserts html into header to allow users to search for students.
 header.insertAdjacentHTML('beforeend', headerHtml);
+
 const input = document.querySelector('input');
 const label = document.querySelector('label');
 
-function filterNames(searchInput, list) {   
-   let filterList = [];
-   for (let i = 0; i < list.length; i++) {
-      let firstName = list[i].name.first;
-      let lastName = list[i].name.last;
-      let fullName = `${firstName} ${lastName}`;
-      let filterName = fullName.toLocaleLowerCase();
-      if (filterName.includes(searchInput.toLowerCase())) {
-         filterList.push(list[i]);
-      }   
-   }
-   // handle empty search results
-   showPage(filterList, 1);
-   pageButtons(filterList);
-}
 
- label.addEventListener('click', (e) => {
-   e.preventDefault();
-   if (e.target.value === '') {
-      return;
-   }
-   else if (e.target.tagName === 'IMG' || 'BUTTON') {
-   const inputValue = document.querySelector('input').value;
-   filterNames(inputValue, data);
-   }
- });
 
-input.addEventListener('keyup', (e) => {
-   const inputValue = document.querySelector('input').value;
-   filterNames(inputValue, data);
- });
+
 /*
 Create the `showPage` function
 This function will create and insert/append the elements needed to display a "page" of nine students
 */
 function showPage(list, page) {
+   let h1 = document.querySelector('h1');
+   if (list.length < 1 && !h1) {
+      let noResults = 'Sorry, No Matches Found.';
+      let noMatches = `<h1>${noResults}</h1>`
+      header.insertAdjacentHTML('afterend', noMatches);
+   }  
    let startIndex = (page * 9) - 9;
    let endIndex =  page * 9;
    const studentList = document.querySelector('.student-list');
@@ -70,7 +50,6 @@ function showPage(list, page) {
    }
 }
 
-
 /*
 Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
@@ -80,6 +59,10 @@ function  pageButtons(list) {
    const totalButtons = Math.ceil(list.length / 9);
    const linkList = document.querySelector('.link-list');
    linkList.innerHTML = '';
+
+   if (list.length < 1) {
+      return;
+   }
 
    for (let i = 0; i <  totalButtons;  i++) {
       let html = `
@@ -96,20 +79,58 @@ function  pageButtons(list) {
    linkList.addEventListener('click', (e) => {
       if (e.target.tagName === 'BUTTON') {
          let active = linkList.querySelector('.active');
-
          active.className = '';
-
          e.target.className = 'active';
-
          let page = e.target.textContent;
-
-         showPage(data, page);
+         if (data === list){
+            showPage (data, page);
+         } else {
+            showPage (list, page);
+         }
       }
    });
-
 }
 
-// Call functions
+// Function that creates a new filtered list that matches search input. 
+// Calls showPage function with new list to display matching students to input value.
+// Calls pageButtons function with new list to update the number of buttons needed on page.
 
+function filterNames(searchInput, list) {   
+   let filterList = [];
+   for (let i = 0; i < list.length; i++) {
+      let firstName = list[i].name.first;
+      let lastName = list[i].name.last;
+      let fullName = `${firstName} ${lastName}`;
+      let filterName = fullName.toLocaleLowerCase();
+      if (filterName.includes(searchInput.toLowerCase())) {
+         filterList.push(list[i]);
+      }   
+   }
+   if (filterList.length > 0 && document.querySelector('h1')) {
+      document.querySelector('h1').remove();
+   }
+   showPage(filterList, 1);
+   pageButtons(filterList);
+}
+
+// Event listeners call filterNames function as someone searches for a student name.
+// Events pass inputValue and student data field as arguments.
+label.addEventListener('click', (e) => {
+   e.preventDefault();
+   if (e.target.value === '') {
+      return;
+   }
+   else if (e.target.tagName === 'IMG' || 'BUTTON') {
+   const inputValue = document.querySelector('input').value;
+   filterNames(inputValue, data);
+   }
+ });
+
+input.addEventListener('keyup', (e) => {
+   const inputValue = document.querySelector('input').value;
+   filterNames(inputValue, data);
+ });
+
+// Call functions to load page 1
 showPage(data, 1);
 pageButtons(data);

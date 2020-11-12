@@ -52,7 +52,7 @@ function showPage(list, page) {
 // Appends buttons to page.
 // No buttons displayed if search result is empty.
 
-function  pageButtons(list) {
+function  addPagination(list) {
    const totalButtons = Math.ceil(list.length / 9);
    const linkList = document.querySelector('.link-list');
    linkList.innerHTML = '';
@@ -94,7 +94,7 @@ function  pageButtons(list) {
 
 // Function that creates a new filtered list that matches search input. 
 // Calls showPage function with new list to display matching students to input value.
-// Calls pageButtons function with new list to update the number of buttons needed on page.
+// Calls addPagination function with new list to update the number of buttons needed on page.
 
 function filterNames(searchInput, list) {   
    let filterList = [];
@@ -112,7 +112,7 @@ function filterNames(searchInput, list) {
       document.querySelector('h1').remove();
    }
    showPage(filterList, 1);
-   pageButtons(filterList);
+   addPagination(filterList);
 }
 
 // Event listeners call filterNames function as someone searches for a student name.
@@ -137,4 +137,4 @@ input.addEventListener('keyup', (e) => {
 // Call function to load page 1 with the first 9 students from data array.
 showPage(data, 1);
 // Call function to load page buttons based on number of students in data array.
-pageButtons(data);
+addPagination(data);
